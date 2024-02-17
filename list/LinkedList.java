@@ -47,6 +47,20 @@ public class LinkedList {
         return total;
     }
 
+    private void reverse() {
+        Node prev = null;
+        Node curr = head;
+        Node next = null;
+
+        while (curr != null) {
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        head = prev;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("[");
@@ -73,5 +87,7 @@ public class LinkedList {
 
         System.out.println(l);
         System.out.println(l.size());
+        l.reverse();
+        System.out.println(l);
     }
 }
