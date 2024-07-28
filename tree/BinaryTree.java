@@ -47,11 +47,114 @@ public class BinaryTree {
         return root;
     }
 
-    static void preorderTraversal(Node root) {
+    static void deleteDeepest(Node root, Node _node) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        Node temp;
+        while (!queue.isEmpty()) {
+            temp = queue.poll();
+
+            if (temp == _node) {
+                temp = null;
+                _node = null;
+                return;
+            }
+
+            if (temp.right != null) {
+                if (temp.right == _node) {
+                    temp.right = null;
+                    _node = null;
+                    return;
+                } else {
+                    queue.offer(temp.right);
+                }
+            }
+
+            if (temp.left != null) {
+                if (temp.left == _node) {
+                    temp.left = null;
+                    _node = null;
+                    return;
+                } else {
+                    queue.offer(temp.left);
+                }
+            }
+        }
+    }
+
+    static Node delete(Node root, int key) {
+        if (root == null) return null;
+        if (root.left == null & root.right == null) {
+            if (root.data == key) {
+                return null;
+            } else {
+                return root;
+            }
+        }
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        Node temp = new Node(0);
+        Node keyNode = null;
+
+        while (!queue.isEmpty()) {
+            temp = queue.poll();
+            if (temp.data == key) keyNode = temp;
+            if (temp.left != null) queue.offer(temp.left);
+            if (temp.right != null) queue.offer(temp.right);
+        }
+
+        if (keyNode != null) {
+            keyNode.data = temp.data;
+            deleteDeepest(root, temp);
+        }
+
+        return root;
+    }
+
+    static void inOrderTraversal(Node root) {
         if (root == null) return;
-        System.out.println("Data: " + root.data);
-        preorderTraversal(root.left);
-        preorderTraversal(root.right);
+        inOrderTraversal(root.left);
+        System.out.print(root.data + " ");
+        inOrderTraversal(root.right);
+    }
+
+    static void preOrderTraversal(Node root) {
+        if (root == null) return;
+        System.out.print(root.data + " ");
+        preOrderTraversal(root.left);
+        preOrderTraversal(root.right);
+    }
+
+    static void postOrderTraversal(Node root) {
+        if (root == null) return;
+        postOrderTraversal(root.left);
+        postOrderTraversal(root.right);
+        System.out.print(root.data + ", ");
+    }
+
+    static void levelOrderTraversal(Node root) {
+        if (root == null) return;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node temp = queue.poll();
+            System.out.print(temp.data + " ");
+
+            /* Push left child in the queue */
+            if (temp.left != null) {
+                queue.offer(temp.left);
+            }
+
+            /* Push right child in the queue */
+            if (temp.right != null) {
+                queue.offer(temp.right);
+            }
+        }
     }
 
 
@@ -63,6 +166,19 @@ public class BinaryTree {
         root = insert(root, 30);
         root = insert(root, 11);
 
-        preorderTraversal(root);
+        System.out.println("Level Order Traversal");
+        levelOrderTraversal(root);
+
+        System.out.println("\nIn Order Traversal");
+        inOrderTraversal(root);
+
+        System.out.println("\nPost Order Traversal");
+        postOrderTraversal(root);
+
+        System.out.println("\nBefore");
+        preOrderTraversal(root);
+        delete(root, 20);
+        System.out.println("\nAfter");
+        preOrderTraversal(root);
     }
 }
